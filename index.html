@@ -3,34 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
     <title>SAIKO Store | سايكو ستور 🛍️</title>
-    <meta property="og:title" content="SAIKO Store | متجر سايكو">
-    <meta property="og:description" content="عالم الهدايا والإكسسوارات المميزة - متجر سايكو">
-    <meta property="og:type" content="website">
-    <meta property="og:image" content="https://i.ibb.co/vzPRY8Y/saiko-logo.png">
-
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/all.min.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap');
         body { background: #0f0c29; color: white; font-family: 'Cairo', sans-serif; overflow-x: hidden; }
         .gift-card { background: rgba(255, 255, 255, 0.05); border-radius: 20px; border: 1px solid #ff4d94; padding: 15px; margin-bottom: 25px; box-shadow: 0 10px 20px rgba(0,0,0,0.3); transition: 0.3s; }
-        .gift-card:hover { transform: translateY(-5px); border-color: #00d4ff; }
+        .gift-card:hover { border-color: #00d4ff; transform: translateY(-5px); }
         .carousel-item img { height: 350px; object-fit: cover; border-radius: 15px; background: #24243e; }
-        .price { color: #ff4d94; font-size: 1.6rem; font-weight: bold; margin-top: 10px; }
-        .btn-wa { background: #25d366; color: white; border-radius: 50px; font-weight: bold; transition: 0.3s; border: none; }
         
-        /* تنسيق البحث */
-        .search-container { max-width: 500px; margin: 0 auto 30px; }
-        .search-input { background: rgba(255,255,255,0.1); border: 2px solid #00d4ff; color: white; border-radius: 50px; padding: 10px 20px; text-align: center; }
-        .search-input:focus { background: rgba(255,255,255,0.15); border-color: #ff4d94; box-shadow: none; color: white; }
+        /* شريط البحث */
+        .search-box { max-width: 500px; margin: 0 auto 30px; }
+        .search-input { background: rgba(255,255,255,0.1); border: 2px solid #00d4ff; color: white; border-radius: 50px; padding: 12px; text-align: center; font-weight: bold; }
+        .search-input:focus { background: rgba(255,255,255,0.2); border-color: #ff4d94; color: white; box-shadow: 0 0 10px #ff4d94; }
 
-        /* تنسيق زراير التفاعل */
-        .reaction-bar { display: flex; justify-content: center; gap: 15px; margin: 10px 0; }
-        .btn-react { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white; border-radius: 10px; padding: 5px 15px; font-size: 0.9rem; transition: 0.3s; }
-        .btn-react.active-like { background: rgba(40, 167, 69, 0.2); border-color: #28a745; color: #28a745; }
-        .btn-react.active-dislike { background: rgba(220, 53, 69, 0.2); border-color: #dc3545; color: #dc3545; }
+        /* زراير التفاعل */
+        .reaction-bar { display: flex; justify-content: center; gap: 15px; margin: 15px 0; }
+        .btn-react { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white; border-radius: 50px; padding: 8px 18px; transition: 0.3s; cursor: pointer; font-weight: bold; }
+        .btn-like.active { background: #28a745; border-color: #28a745; box-shadow: 0 0 10px #28a745; }
+        .btn-dislike.active { background: #dc3545; border-color: #dc3545; box-shadow: 0 0 10px #dc3545; }
+        
+        .price { color: #ff4d94; font-size: 1.6rem; font-weight: bold; margin-bottom: 10px; }
+        .btn-wa { background: #25d366; color: white; border-radius: 50px; font-weight: bold; padding: 12px; transition: 0.3s; border: none; text-decoration: none; display: block; width: 100%; }
+        .btn-wa:hover { background: #1ebe57; transform: scale(1.02); color: white; }
 
         .heart { position: fixed; top: -10%; color: #ff4d94; animation: fall linear forwards; z-index: 1000; pointer-events: none; }
         @keyframes fall { to { transform: translateY(110vh) rotate(360deg); } }
@@ -39,11 +35,11 @@
 <body>
 
 <div class="container py-5 text-center">
-    <h1 class="display-4 mb-2" style="color: #00d4ff; font-weight: bold;">SAIKO Store</h1>
-    <p class="lead mb-4">عالم الهدايا - Saiko Store 🛍️</p>
+    <h1 class="display-4 mb-2" style="font-weight:700; color:#00d4ff;">SAIKO Store</h1>
+    <p class="lead mb-4">عالم الهدايا والإكسسوارات المميزة 🛍️</p>
 
-    <div class="search-container">
-        <input type="text" id="searchInput" class="form-control search-input" placeholder="ابحث عن اسم المنتج هنا..." onkeyup="searchProducts()">
+    <div class="search-box">
+        <input type="text" id="searchInput" class="form-control search-input" placeholder="🔍 ابحث عن هديتك هنا..." onkeyup="filterItems()">
     </div>
 
     <div id="products-list" class="row mt-2 justify-content-center"></div>
@@ -63,39 +59,33 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
 
-    // دالة البحث
-    function searchProducts() {
+    function filterItems() {
         let val = document.getElementById('searchInput').value.toLowerCase();
-        let cols = document.getElementsByClassName('product-col');
-        for (let col of cols) {
-            let name = col.getAttribute('data-name').toLowerCase();
-            col.style.display = name.includes(val) ? "" : "none";
+        let items = document.getElementsByClassName('product-col');
+        for (let item of items) {
+            let name = item.getAttribute('data-name').toLowerCase();
+            item.style.display = name.includes(val) ? "" : "none";
         }
     }
 
-    // دالة التفاعل الذكي (لايك و ديس لايك متبادل)
     async function handleVote(id, type) {
+        const key = `voted_${id}`;
+        const lastAction = localStorage.getItem(key);
+        if (lastAction === type) return;
+
         const docRef = db.collection("gifts").doc(id);
-        const storageKey = `vote_${id}`;
-        const currentVote = localStorage.getItem(storageKey); // لتخزين حالة المستخدم محلياً
-
-        if (currentVote === type) return; // لو ضغط نفس الزرار ميعملش حاجة
-
         const batch = db.batch();
-        
-        if (!currentVote) {
-            // أول مرة يضغط
+
+        if (!lastAction) {
             batch.update(docRef, { [type]: firebase.firestore.FieldValue.increment(1) });
         } else {
-            // تغيير رأيه: ينقص القديم ويزود الجديد
             batch.update(docRef, { 
-                [currentVote]: firebase.firestore.FieldValue.increment(-1),
+                [lastAction]: firebase.firestore.FieldValue.increment(-1),
                 [type]: firebase.firestore.FieldValue.increment(1) 
             });
         }
-        
         await batch.commit();
-        localStorage.setItem(storageKey, type);
+        localStorage.setItem(key, type);
     }
 
     db.collection("gifts").orderBy("createdAt", "desc").onSnapshot(snap => {
@@ -104,13 +94,12 @@
         snap.forEach(doc => {
             const data = doc.data();
             const imgs = data.images || (data.image ? [data.image] : []);
-            const likes = data.likes || 0;
-            const dislikes = data.dislikes || 0;
+            const userChoice = localStorage.getItem(`voted_${doc.id}`);
             
             let carouselId = `slide-${doc.id}`;
             let carouselItems = imgs.map((url, i) => `
                 <div class="carousel-item ${i === 0 ? 'active' : ''}">
-                    <img src="${url}" class="d-block w-100" onerror="this.src='https://via.placeholder.com/350x350?text=جاري+تحميل+الصورة'">
+                    <img src="${url}" class="d-block w-100" onerror="this.src='https://via.placeholder.com/350x350'">
                 </div>`).join('');
             
             list.innerHTML += `
@@ -126,17 +115,17 @@
                         <h3 class="mt-3" style="font-weight:700;">${data.name}</h3>
                         
                         <div class="reaction-bar">
-                            <button onclick="handleVote('${doc.id}', 'likes')" class="btn-react">
-                                <i class="fas fa-thumbs-up text-success"></i> <span>${likes}</span>
+                            <button onclick="handleVote('${doc.id}', 'likes')" class="btn-react btn-like ${userChoice === 'likes' ? 'active' : ''}">
+                                <i class="fas fa-thumbs-up"></i> <span>${data.likes || 0}</span>
                             </button>
-                            <button onclick="handleVote('${doc.id}', 'dislikes')" class="btn-react">
-                                <i class="fas fa-thumbs-down text-danger"></i> <span>${dislikes}</span>
+                            <button onclick="handleVote('${doc.id}', 'dislikes')" class="btn-react btn-dislike ${userChoice === 'dislikes' ? 'active' : ''}">
+                                <i class="fas fa-thumbs-down"></i> <span>${data.dislikes || 0}</span>
                             </button>
                         </div>
 
                         <p class="price">${data.price} ج.م</p>
-                        <a href="https://wa.me/201289984200?text=أريد طلب: ${data.name}" class="btn btn-wa w-100 py-2">
-                            <i class="fab fa-whatsapp"></i> اطلب الآن هذا المنتج
+                        <a href="https://wa.me/201289984200?text=أريد طلب: ${data.name}" class="btn-wa">
+                            <i class="fab fa-whatsapp"></i> اطلب الآن عبر واتساب
                         </a>
                     </div>
                 </div>`;
