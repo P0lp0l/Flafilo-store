@@ -12,22 +12,28 @@
         .gift-card { background: rgba(255, 255, 255, 0.05); border-radius: 20px; border: 1px solid #ff4d94; padding: 15px; margin-bottom: 25px; transition: 0.3s; }
         .carousel-item img { height: 350px; object-fit: cover; border-radius: 15px; }
         
-        /* شريط البحث */
         .search-box { max-width: 500px; margin: 0 auto 30px; }
         .search-input { background: rgba(255,255,255,0.1); border: 2px solid #00d4ff; color: white; border-radius: 50px; padding: 12px; text-align: center; }
-        .search-input:focus { background: rgba(255,255,255,0.2); border-color: #ff4d94; color: white; box-shadow: 0 0 10px #ff4d94; }
+        .search-input:focus { background: rgba(255,255,255,0.2); border-color: #ff4d94; color: white; box-shadow: 0 0 10px #ff4d94; outline: none; }
 
-        /* تنسيق التفاعل الجديد: الزرار وتحته العدد */
-        .reaction-container { display: flex; justify-content: center; gap: 40px; margin: 15px 0; }
-        .react-group { display: flex; flex-direction: column; align-items: center; gap: 5px; }
-        .btn-react { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white; border-radius: 50%; width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; transition: 0.3s; cursor: pointer; font-size: 1.2rem; }
-        .count-label { font-weight: bold; font-size: 1rem; }
+        /* تنسيق التفاعل بالألوان */
+        .reaction-container { display: flex; justify-content: center; gap: 50px; margin: 20px 0; }
+        .react-group { display: flex; flex-direction: column; align-items: center; cursor: pointer; transition: 0.3s; opacity: 0.6; }
+        .react-group:hover { transform: scale(1.2); opacity: 1; }
+        .emoji-btn { font-size: 2.5rem; line-height: 1; margin-bottom: 5px; user-select: none; }
+        .count-label { font-weight: bold; font-size: 1.1rem; color: white; }
         
-        .btn-like.active { background: #28a745; border-color: #28a745; box-shadow: 0 0 10px #28a745; }
-        .btn-dislike.active { background: #dc3545; border-color: #dc3545; box-shadow: 0 0 10px #dc3545; }
-        
-        .price { color: #ff4d94; font-size: 1.6rem; font-weight: bold; margin-bottom: 10px; }
-        .btn-wa { background: #25d366; color: white; border-radius: 50px; font-weight: bold; padding: 12px; text-decoration: none; display: block; width: 100%; }
+        /* الألوان عند الضغط */
+        .react-group.active-like { opacity: 1; }
+        .react-group.active-like .emoji-btn { filter: drop-shadow(0 0 10px #28a745); }
+        .react-group.active-like .count-label { color: #28a745; text-shadow: 0 0 5px rgba(40, 167, 69, 0.5); }
+
+        .react-group.active-dislike { opacity: 1; }
+        .react-group.active-dislike .emoji-btn { filter: drop-shadow(0 0 10px #dc3545); }
+        .react-group.active-dislike .count-label { color: #dc3545; text-shadow: 0 0 5px rgba(220, 53, 69, 0.5); }
+
+        .price { color: #ff4d94; font-size: 1.6rem; font-weight: bold; margin-bottom: 15px; }
+        .btn-wa { background: #25d366; color: white; border-radius: 50px; font-weight: bold; padding: 12px; text-decoration: none; display: block; width: 100%; border: none; }
         .heart { position: fixed; top: -10%; color: #ff4d94; animation: fall linear forwards; z-index: 1000; pointer-events: none; }
         @keyframes fall { to { transform: translateY(110vh) rotate(360deg); } }
     </style>
@@ -104,22 +110,18 @@
                         <h3 class="mt-3" style="font-weight:700;">${data.name}</h3>
                         
                         <div class="reaction-container">
-                            <div class="react-group">
-                                <button onclick="handleVote('${doc.id}', 'likes')" class="btn-react btn-like ${userChoice === 'likes' ? 'active' : ''}">
-                                    <i class="fas fa-thumbs-up"></i>
-                                </button>
-                                <span class="count-label text-success">${data.likes || 0}</span>
+                            <div class="react-group ${userChoice === 'likes' ? 'active-like' : ''}" onclick="handleVote('${doc.id}', 'likes')">
+                                <span class="emoji-btn">👍</span>
+                                <span class="count-label">${data.likes || 0}</span>
                             </div>
-                            <div class="react-group">
-                                <button onclick="handleVote('${doc.id}', 'dislikes')" class="btn-react btn-dislike ${userChoice === 'dislikes' ? 'active' : ''}">
-                                    <i class="fas fa-thumbs-down"></i>
-                                </button>
-                                <span class="count-label text-danger">${data.dislikes || 0}</span>
+                            <div class="react-group ${userChoice === 'dislikes' ? 'active-dislike' : ''}" onclick="handleVote('${doc.id}', 'dislikes')">
+                                <span class="emoji-btn">👎</span>
+                                <span class="count-label">${data.dislikes || 0}</span>
                             </div>
                         </div>
 
                         <p class="price">${data.price} ج.م</p>
-                        <a href="https://wa.me/201289984200?text=أريد طلب: ${data.name}" class="btn-wa">طلب عبر واتساب</a>
+                        <a href="https://wa.me/201289984200?text=أريد طلب: ${data.name}" class="btn-wa text-center">طلب عبر واتساب</a>
                     </div>
                 </div>`;
         });
