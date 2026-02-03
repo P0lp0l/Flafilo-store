@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>لوحة تحكم الاداره | Admin</title>
+    <title>لوحة تحكم سايكو ستور | Admin</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
@@ -11,10 +11,20 @@
         @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap');
         body { font-family: 'Cairo', sans-serif; background: #0f0c29; background: linear-gradient(to right, #24243e, #302b63, #0f0c29); color: white; min-height: 100vh; padding: 20px; }
         .admin-card { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(15px); border-radius: 25px; border: 1px solid rgba(255, 255, 255, 0.1); padding: 30px; margin-bottom: 30px; }
-        h2 { color: #ff4d94; font-weight: 700; text-shadow: 0 0 10px rgba(255, 77, 148, 0.5); }
+        h2, h4 { color: #ff4d94; font-weight: 700; text-shadow: 0 0 10px rgba(255, 77, 148, 0.5); }
         .form-control { background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: white; border-radius: 12px; padding: 12px; margin-bottom: 10px; }
         .btn-primary { background: linear-gradient(45deg, #ff4d94, #ff758c); border: none; border-radius: 12px; padding: 12px; font-weight: bold; width: 100%; transition: 0.3s; }
-        .btn-primary:hover { transform: scale(1.02); }
+        
+        /* منطقة الرفع الجديدة */
+        #drop-area { border: 2px dashed #ff4d94; border-radius: 15px; background: rgba(255, 77, 148, 0.05); cursor: pointer; transition: 0.3s; padding: 20px; }
+        #drop-area:hover { background: rgba(255, 77, 148, 0.1); }
+        
+        /* تصميم معاينة الصور */
+        .preview-container { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 15px; }
+        .preview-item { position: relative; width: 80px; height: 80px; }
+        .preview-item img { width: 100%; height: 100%; object-fit: cover; border-radius: 10px; border: 2px solid #ff4d94; }
+        .remove-img { position: absolute; top: -5px; right: -5px; background: #ff4d4d; color: white; border: none; border-radius: 50%; width: 22px; height: 22px; font-size: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 5px rgba(0,0,0,0.5); }
+        
         .table { color: white; vertical-align: middle; }
         .table-img { width: 50px; height: 50px; object-fit: cover; border-radius: 8px; }
         #admin-content { display: none; }
@@ -24,7 +34,7 @@
 <body>
 
 <div id="login-section" class="admin-card" style="max-width: 450px; margin: 100px auto;">
-    <h2 class="text-center mb-4">دخول الإدارة 🔐</h2>
+    <h2 class="text-center mb-4">دخول إدارة سايكو 🔐</h2>
     <input type="email" id="login-email" class="form-control" placeholder="البريد الإلكتروني">
     <input type="password" id="login-password" class="form-control" placeholder="كلمة المرور">
     <button class="btn btn-primary mt-3" onclick="login()">دخول الآن</button>
@@ -32,26 +42,34 @@
 
 <div id="admin-content" class="container">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2>لوحة تحكم الادمن</h2>
+        <h2>لوحة تحكم SAIKO Store</h2>
         <button class="btn btn-outline-light btn-sm" onclick="logout()">خروج</button>
     </div>
 
     <div class="admin-card">
-        <h4>إضافة منتج من الاستوديو ✨</h4>
-        <div class="row g-2">
-            <div class="col-md-6"><input type="text" id="p-name" class="form-control" placeholder="اسم االمنتج></div>
+        <h4>إضافة منتج جديد ✨</h4>
+        <div class="row g-3">
+            <div class="col-md-6"><input type="text" id="p-name" class="form-control" placeholder="اسم المنتج"></div>
             <div class="col-md-6"><input type="number" id="p-price" class="form-control" placeholder="السعر (ج.م)"></div>
+            
             <div class="col-12">
-                <label class="small mb-1 text-white-50">اختر صور المنتج:</label>
-                <input type="file" id="p-files" class="form-control" accept="image/*" multiple>
+                <label class="mb-2">صور المنتج (اختر صورة أو أكثر):</label>
+                <div id="drop-area" onclick="document.getElementById('p-files').click()">
+                    <i class="fas fa-images fa-2x mb-2" style="color: #ff4d94;"></i>
+                    <p class="mb-0">اضغط هنا لاختيار الصور من الاستوديو</p>
+                    <input type="file" id="p-files" hidden accept="image/*" multiple onchange="handleFiles(this.files)">
+                </div>
+                <div id="preview-container" class="preview-container"></div>
+                <p id="img-counter" class="small mt-2 text-info"></p>
             </div>
-            <div id="upload-status">جاري رفع الصور يا بطل... ⏳</div>
+
+            <div id="upload-status">جاري رفع الصور لسايكو ستور... ⏳</div>
             <button class="btn btn-primary mt-3" onclick="addProduct()">إضافة للمتجر الآن 🚀</button>
         </div>
     </div>
 
     <div class="admin-card">
-        <h4>المنتجات المعروضة</h4>
+        <h4>المنتجات الحالية</h4>
         <div class="table-responsive">
             <table class="table">
                 <thead><tr><th>الصورة</th><th>الاسم</th><th>السعر</th><th>حذف</th></tr></thead>
@@ -79,8 +97,43 @@
     const auth = firebase.auth();
     const db = firebase.firestore();
 
+    let selectedFiles = []; // لتخزين الصور المختارة فعلياً
+
     function showToast(msg, color) {
         Toastify({ text: msg, duration: 3000, gravity: "top", position: "center", style: { background: color, borderRadius: "10px" } }).showToast();
+    }
+
+    // التعامل مع اختيار الصور والمعاينة
+    function handleFiles(files) {
+        const arr = Array.from(files);
+        selectedFiles = [...selectedFiles, ...arr];
+        renderPreview();
+    }
+
+    function renderPreview() {
+        const container = document.getElementById('preview-container');
+        const counter = document.getElementById('img-counter');
+        container.innerHTML = '';
+        
+        selectedFiles.forEach((file, index) => {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const div = document.createElement('div');
+                div.className = 'preview-item';
+                div.innerHTML = `
+                    <img src="${e.target.result}">
+                    <button class="remove-img" onclick="removeImage(${index})"><i class="fas fa-times"></i></button>
+                `;
+                container.appendChild(div);
+            };
+            reader.readAsDataURL(file);
+        });
+        counter.innerText = selectedFiles.length > 0 ? `تم اختيار ${selectedFiles.length} صور` : "";
+    }
+
+    function removeImage(index) {
+        selectedFiles.splice(index, 1);
+        renderPreview();
     }
 
     async function login() {
@@ -88,7 +141,7 @@
             await auth.signInWithEmailAndPassword(document.getElementById('login-email').value, document.getElementById('login-password').value);
             document.getElementById('login-section').style.display = 'none';
             document.getElementById('admin-content').style.display = 'block';
-            showToast("مرحباً ايها المالك 👋", "#25d366");
+            showToast("مرحباً بك في إدارة سايكو 👋", "#25d366");
             loadProducts();
         } catch (e) { showToast("بيانات الدخول خطأ ❌", "#ff4d4d"); }
     }
@@ -96,17 +149,16 @@
     async function addProduct() {
         const name = document.getElementById('p-name').value;
         const price = document.getElementById('p-price').value;
-        const files = document.getElementById('p-files').files;
         const status = document.getElementById('upload-status');
-        const apiKey = 'Ff535d677000fe55d5f463ccfdadc283'; // مفتاحك
+        const apiKey = 'Ff535d677000fe55d5f463ccfdadc283';
 
-        if(!name || !price || files.length === 0) return showToast("املأ البيانات واختار الصور! ⚠️", "#ff9800");
+        if(!name || !price || selectedFiles.length === 0) return showToast("املأ البيانات واختار الصور! ⚠️", "#ff9800");
 
         status.style.display = 'block';
         let urls = [];
 
         try {
-            for (let file of files) {
+            for (let file of selectedFiles) {
                 let fd = new FormData(); fd.append('image', file);
                 const res = await fetch(`https://api.imgbb.com/1/upload?key=${apiKey}`, { method: 'POST', body: fd });
                 const data = await res.json();
@@ -114,11 +166,13 @@
             }
             await db.collection("gifts").add({ name, price, images: urls, createdAt: new Date() });
             status.style.display = 'none';
-            showToast("تمت الإضافة بنجاح ✅", "#25d366");
-            // تصفير الخانات للبقاء في الصفحة
+            showToast("تم إضافة المنتج لسايكو بنجاح ✅", "#25d366");
+            
+            // تصفير البيانات
             document.getElementById('p-name').value = '';
             document.getElementById('p-price').value = '';
-            document.getElementById('p-files').value = '';
+            selectedFiles = [];
+            renderPreview();
         } catch (e) { status.style.display = 'none'; showToast("فشل الرفع ❌", "#ff4d4d"); }
     }
 
@@ -128,7 +182,7 @@
             list.innerHTML = '';
             snap.forEach(doc => {
                 const p = doc.data();
-                const mainImg = p.images ? p.images[0] : '';
+                const mainImg = (p.images && p.images.length > 0) ? p.images[0] : 'https://via.placeholder.com/50';
                 list.innerHTML += `<tr>
                     <td><img src="${mainImg}" class="table-img"></td>
                     <td>${p.name}</td>
@@ -139,7 +193,7 @@
         });
     }
 
-    async function deleteItem(id) { if(confirm("حذف المنتج؟")) await db.collection("gifts").doc(id).delete(); }
+    async function deleteItem(id) { if(confirm("هل أنت متأكد من حذف هذا المنتج من متجر سايكو؟")) await db.collection("gifts").doc(id).delete(); }
     function logout() { auth.signOut(); location.reload(); }
 </script>
 </body>
