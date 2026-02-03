@@ -9,50 +9,38 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap');
         body { background: #0f0c29; color: white; font-family: 'Cairo', sans-serif; overflow-x: hidden; }
-        .gift-card { background: rgba(255, 255, 255, 0.05); border-radius: 20px; border: 1px solid #ff4d94; padding: 15px; margin-bottom: 25px; box-shadow: 0 10px 20px rgba(0,0,0,0.3); }
+        .gift-card { background: rgba(255, 255, 255, 0.05); border-radius: 20px; border: 1px solid #ff4d94; padding: 15px; margin-bottom: 25px; }
         .carousel-item img { height: 350px; object-fit: cover; border-radius: 15px; background: #24243e; }
         
-        /* التفاعل */
-        .reaction-container { display: flex; justify-content: center; gap: 30px; margin: 15px 0; }
-        .react-group { cursor: pointer; text-align: center; user-select: none; transition: 0.3s; }
-        .active-like { color: #28a745; text-shadow: 0 0 10px #28a745; }
-        .active-dislike { color: #dc3545; text-shadow: 0 0 10px #dc3545; }
-
-        /* صندوق التعليقات - تفتيح الخلفية */
+        /* صندوق التعليقات - خلفية فاتحة جداً لضمان الرؤية */
         .comments-area { 
-            background: rgba(255, 255, 255, 0.15); /* تفتيح الخلفية لظهور الخط */
-            border-radius: 15px; padding: 12px; margin-top: 15px; 
-            max-height: 250px; overflow-y: auto; border: 1px solid rgba(0, 212, 255, 0.4);
+            background: rgba(255, 255, 255, 0.25) !important; 
+            border-radius: 15px; padding: 15px; margin-top: 15px; 
+            min-height: 60px; max-height: 250px; overflow-y: auto; 
+            border: 1px solid #00d4ff;
         }
         
-        /* إطار فريد لكل تعليق */
+        /* إطار التعليق */
         .comment-item { 
-            background: rgba(15, 12, 41, 0.8); /* خلفية داكنة داخل الصندوق الفاتح */
-            border: 1px solid rgba(255,255,255,0.15);
-            padding: 10px; border-radius: 12px; margin-bottom: 10px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.3); position: relative;
-            transition: 0.3s;
+            background: #1a1a3a; border: 1px solid rgba(255,255,255,0.2);
+            padding: 10px; border-radius: 12px; margin-bottom: 8px; color: white;
         }
-        .comment-item.pinned { border: 1px solid #ff4d94; box-shadow: 0 0 8px rgba(255, 77, 148, 0.4); }
-        .comment-text { font-size: 0.95rem; color: #ffffff; text-align: right; line-height: 1.5; }
-        .del-btn { color: #ff4d4d; font-size: 0.75rem; cursor: pointer; border: none; background: none; float: left; font-weight: bold; }
+        .comment-item.pinned { border: 2px solid #ff4d94; background: rgba(255, 77, 148, 0.1); }
+        .comment-text { font-size: 0.95rem; text-align: right; color: white !important; }
 
-        /* خانة الإدخال */
-        .comment-input-group { display: flex; gap: 8px; margin-top: 15px; }
-        .comment-field { background: rgba(255,255,255,0.1); border: 2px solid #00d4ff; color: white; border-radius: 25px; padding: 8px 18px; flex-grow: 1; outline: none; }
-        .send-btn { background: #00d4ff; border: none; border-radius: 50%; width: 40px; height: 40px; color: #0f0c29; transition: 0.3s; }
-        .send-btn:hover { transform: scale(1.1); background: #00b8e6; }
+        .comment-input-group { display: flex; gap: 8px; margin-top: 12px; }
+        .comment-field { background: rgba(255,255,255,0.15); border: 2px solid #00d4ff; color: white; border-radius: 20px; padding: 8px 15px; flex-grow: 1; outline: none; }
+        .send-btn { background: #00d4ff; border: none; border-radius: 50%; width: 40px; height: 40px; color: #0f0c29; }
 
-        .price { color: #ff4d94; font-size: 1.7rem; font-weight: bold; margin-top: 10px; }
-        .btn-wa { background: #25d366; color: white; border-radius: 50px; font-weight: bold; transition: 0.3s; }
-        .btn-wa:hover { background: #1ebe57; transform: translateY(-2px); }
+        .price { color: #ff4d94; font-size: 1.6rem; font-weight: bold; margin: 10px 0; }
+        .btn-wa { background: #25d366; color: white; border-radius: 50px; font-weight: bold; padding: 12px; text-decoration: none; display: block; width: 100%; text-align: center; }
     </style>
 </head>
 <body>
 
 <div class="container py-5 text-center">
-    <h1 class="display-4 mb-2" style="font-weight: 700; color: #00d4ff;">SAIKO Store</h1>
-    <div id="products-list" class="row mt-4 justify-content-center"></div>
+    <h1 class="display-4 mb-4" style="font-weight:700; color:#00d4ff;">SAIKO Store</h1>
+    <div id="products-list" class="row justify-content-center"></div>
 </div>
 
 <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
@@ -69,80 +57,32 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
 
-    // معرف المستخدم الفريد للحذف
     if(!localStorage.getItem('saiko_user_id')) {
-        localStorage.setItem('saiko_user_id', 'user_' + Math.random().toString(36).substr(2, 9));
+        localStorage.setItem('saiko_user_id', 'u_' + Math.random().toString(36).substr(2, 9));
     }
 
-    // دالة التصويت
-    async function handleVote(id, type) {
-        const key = `voted_${id}`;
-        const last = localStorage.getItem(key);
-        const ref = db.collection("gifts").doc(id);
-        if(last === type) {
-            await ref.update({ [type]: firebase.firestore.FieldValue.increment(-1) });
-            localStorage.removeItem(key);
-        } else {
-            if(last) await ref.update({ [last]: firebase.firestore.FieldValue.increment(-1) });
-            await ref.update({ [type]: firebase.firestore.FieldValue.increment(1) });
-            localStorage.setItem(key, type);
-        }
-    }
-
-    // دالة إضافة تعليق
-    async function addComment(id) {
-        const inp = document.getElementById(`inp-${id}`);
-        const text = inp.value.trim();
-        if(!text) return;
-        await db.collection("gifts").doc(id).collection("comments").add({
-            text: text,
-            userId: localStorage.getItem('saiko_user_id'),
-            createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-            pinned: false
-        });
-        inp.value = '';
-    }
-
-    // دالة حذف تعليق (لصاحب التعليق)
-    async function deleteComment(pId, cId) {
-        if(confirm("هل متأكد من حذف تعليقك؟")) {
-            await db.collection("gifts").doc(pId).collection("comments").doc(cId).delete();
-        }
-    }
-
-    // جلب المنتجات والتعليقات
+    // جلب المنتجات
     db.collection("gifts").orderBy("createdAt", "desc").onSnapshot(snap => {
         const list = document.getElementById('products-list');
         list.innerHTML = '';
         snap.forEach(doc => {
             const data = doc.data();
-            const imgs = data.images || (data.image ? [data.image] : []);
-            const userChoice = localStorage.getItem(`voted_${doc.id}`);
-            let carouselId = `slide-${doc.id}`;
-            let carouselItems = imgs.map((url, i) => `<div class="carousel-item ${i === 0 ? 'active' : ''}"><img src="${url}" class="d-block w-100"></div>`).join('');
+            const imgs = data.images || [];
+            let carouselId = `c-${doc.id}`;
+            let carouselItems = imgs.map((url, i) => `<div class="carousel-item ${i === 0 ? 'active' : ''}"><img src="${url}"></div>`).join('');
             
             list.innerHTML += `
-                <div class="col-lg-4 col-md-6 col-11 mb-5">
+                <div class="col-lg-4 col-md-6 col-11 mb-4">
                     <div class="gift-card">
                         <div id="${carouselId}" class="carousel slide" data-bs-ride="carousel">
                             <div class="carousel-inner">${carouselItems}</div>
                         </div>
-                        <h3 class="mt-3" style="font-weight: bold;">${data.name}</h3>
-                        
-                        <div class="reaction-container">
-                            <div class="react-group ${userChoice==='likes'?'active-like':''}" onclick="handleVote('${doc.id}', 'likes')">
-                                <i class="fas fa-thumbs-up"></i> أعجبني <br> <span>${data.likes||0}</span>
-                            </div>
-                            <div class="react-group ${userChoice==='dislikes'?'active-dislike':''}" onclick="handleVote('${doc.id}', 'dislikes')">
-                                <i class="fas fa-thumbs-down"></i> لم يعجبني <br> <span>${data.dislikes||0}</span>
-                            </div>
-                        </div>
-
+                        <h3 class="mt-3">${data.name}</h3>
                         <p class="price">${data.price} ج.م</p>
-                        <a href="https://wa.me/201289984200?text=طلب: ${data.name}" class="btn btn-wa w-100 py-3">اطلب عبر واتساب</a>
+                        <a href="https://wa.me/201289984200?text=طلب: ${data.name}" class="btn-wa">طلب عبر واتساب</a>
 
                         <div class="comments-area" id="box-${doc.id}">
-                            <small style="color:#00d4ff">جاري التحميل...</small>
+                            <div id="loading-${doc.id}" style="color: #00d4ff;">جاري التحميل...</div>
                         </div>
 
                         <div class="comment-input-group">
@@ -152,29 +92,57 @@
                     </div>
                 </div>`;
 
-            // الاستماع للتعليقات لكل منتج بعناية
-            db.collection("gifts").doc(doc.id).collection("comments").orderBy("pinned", "desc").orderBy("createdAt", "asc").onSnapshot(cSnap => {
-                const box = document.getElementById(`box-${doc.id}`);
-                if(!box) return;
-                box.innerHTML = ''; // مسح "جاري التحميل" فوراً
-
-                if(cSnap.empty) {
-                    box.innerHTML = '<small style="color:rgba(255,255,255,0.5)">لا توجد تعليقات بعد..</small>';
-                } else {
-                    cSnap.forEach(cDoc => {
-                        const c = cDoc.data();
-                        const isMine = c.userId === localStorage.getItem('saiko_user_id');
-                        box.innerHTML += `
-                            <div class="comment-item ${c.pinned ? 'pinned' : ''}">
-                                ${c.pinned ? '<i class="fas fa-thumbtack" style="color:#ff4d94; float:left; font-size: 0.8rem;"></i>' : ''}
-                                ${isMine ? `<span class="del-btn" onclick="deleteComment('${doc.id}','${cDoc.id}')">حذف</span>` : ''}
-                                <div class="comment-text">${c.text}</div>
-                            </div>`;
-                    });
-                }
-            });
+            // تشغيل الاستماع للتعليقات
+            loadComments(doc.id);
         });
     });
+
+    function loadComments(productId) {
+        const box = document.getElementById(`box-${productId}`);
+        
+        // مؤقت طوارئ: لو الداتا اتأخرت أكتر من 3 ثواني، امسح "جاري التحميل"
+        setTimeout(() => {
+            const loader = document.getElementById(`loading-${productId}`);
+            if (loader) loader.innerHTML = '<small class="text-muted">لا توجد تعليقات</small>';
+        }, 3000);
+
+        db.collection("gifts").doc(productId).collection("comments").orderBy("pinned", "desc").orderBy("createdAt", "asc")
+        .onSnapshot(cSnap => {
+            if (!box) return;
+            box.innerHTML = ''; // مسح الصندوق فور وصول أي رد
+
+            if (cSnap.empty) {
+                box.innerHTML = '<small class="text-muted">لا توجد تعليقات بعد..</small>';
+            } else {
+                cSnap.forEach(cDoc => {
+                    const c = cDoc.data();
+                    const isMine = c.userId === localStorage.getItem('saiko_user_id');
+                    box.innerHTML += `
+                        <div class="comment-item ${c.pinned ? 'pinned' : ''}">
+                            ${c.pinned ? '<i class="fas fa-thumbtack" style="color:#ff4d94; float:left"></i>' : ''}
+                            ${isMine ? `<span style="color:#ff4d4d; font-size:0.7rem; cursor:pointer; float:left" onclick="deleteComment('${productId}','${cDoc.id}')">حذف</span>` : ''}
+                            <div class="comment-text">${c.text}</div>
+                        </div>`;
+                });
+            }
+        });
+    }
+
+    async function addComment(id) {
+        const inp = document.getElementById(`inp-${id}`);
+        if(!inp.value.trim()) return;
+        await db.collection("gifts").doc(id).collection("comments").add({
+            text: inp.value,
+            userId: localStorage.getItem('saiko_user_id'),
+            createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+            pinned: false
+        });
+        inp.value = '';
+    }
+
+    async function deleteComment(pId, cId) {
+        if(confirm("حذف تعليقك؟")) await db.collection("gifts").doc(pId).collection("comments").doc(cId).delete();
+    }
 </script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
