@@ -14,22 +14,41 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/all.min.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap');
-        body { background: #0f0c29; color: white; font-family: 'Cairo', sans-serif; }
-        .gift-card { background: rgba(255, 255, 255, 0.05); border-radius: 20px; border: 1px solid #ff4d94; padding: 15px; margin-bottom: 25px; box-shadow: 0 10px 20px rgba(0,0,0,0.3); }
+        body { background: #0f0c29; color: white; font-family: 'Cairo', sans-serif; overflow-x: hidden; }
+        .gift-card { background: rgba(255, 255, 255, 0.05); border-radius: 20px; border: 1px solid #ff4d94; padding: 15px; margin-bottom: 25px; box-shadow: 0 10px 20px rgba(0,0,0,0.3); transition: 0.3s; }
+        .gift-card:hover { transform: translateY(-5px); border-color: #00d4ff; }
         .carousel-item img { height: 350px; object-fit: cover; border-radius: 15px; background: #24243e; }
         .price { color: #ff4d94; font-size: 1.6rem; font-weight: bold; margin-top: 10px; }
-        .btn-wa { background: #25d366; color: white; border-radius: 50px; font-weight: bold; transition: 0.3s; }
+        .btn-wa { background: #25d366; color: white; border-radius: 50px; font-weight: bold; transition: 0.3s; border: none; }
         .btn-wa:hover { background: #1ebe57; transform: scale(1.03); color: white; }
-        .heart { position: fixed; top: -10%; color: #ff4d94; animation: fall linear forwards; z-index: 1000; }
+        
+        /* تنسيق البحث */
+        .search-container { max-width: 600px; margin: 0 auto 40px; }
+        .search-input { background: rgba(255,255,255,0.1); border: 2px solid #ff4d94; color: white; border-radius: 50px; padding: 12px 25px; text-align: center; }
+        .search-input:focus { background: rgba(255,255,255,0.15); border-color: #00d4ff; color: white; box-shadow: 0 0 15px rgba(0,212,255,0.3); outline: none; }
+
+        /* تنسيق التفاعل */
+        .reaction-btn { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white; border-radius: 12px; padding: 5px 15px; transition: 0.3s; font-size: 0.9rem; }
+        .btn-like:hover { background: rgba(40, 167, 69, 0.2); border-color: #28a745; color: #28a745; }
+        .btn-dislike:hover { background: rgba(220, 53, 69, 0.2); border-color: #dc3545; color: #dc3545; }
+        
+        .heart { position: fixed; top: -10%; color: #ff4d94; animation: fall linear forwards; z-index: 1000; pointer-events: none; }
         @keyframes fall { to { transform: translateY(110vh) rotate(360deg); } }
     </style>
 </head>
 <body>
 
 <div class="container py-5 text-center">
-    <h1 class="display-4 mb-2">SAIKO Store</h1>
-    <p class="lead">عالم الهدايا  -  Saiko Store 🛍️</p>
-    <div id="products-list" class="row mt-5 justify-content-center">
+    <h1 class="display-4 mb-2" style="font-weight: 700; color: #00d4ff;">SAIKO Store</h1>
+    <p class="lead mb-4">عالم الهدايا الراقي - اختيارك الأول للفخامة 🛍️</p>
+
+    <div class="search-container">
+        <div class="input-group">
+            <input type="text" id="searchInput" class="form-control search-input" placeholder="ابحث عن هديتك المفضلة..." onkeyup="searchProducts()">
+        </div>
+    </div>
+
+    <div id="products-list" class="row mt-2 justify-content-center">
         </div>
 </div>
 
@@ -47,12 +66,30 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
 
+    function searchProducts() {
+        let input = document.getElementById('searchInput').value.toLowerCase();
+        let cards = document.getElementsByClassName('product-col');
+        for (let i = 0; i < cards.length; i++) {
+            let name = cards[i].getAttribute('data-name').toLowerCase();
+            cards[i].style.display = name.includes(input) ? "" : "none";
+        }
+    }
+
+    async function handleReaction(id, type) {
+        const docRef = db.collection("gifts").doc(id);
+        await docRef.update({
+            [type]: firebase.firestore.FieldValue.increment(1)
+        });
+    }
+
     db.collection("gifts").orderBy("createdAt", "desc").onSnapshot(snap => {
         const list = document.getElementById('products-list');
         list.innerHTML = '';
         snap.forEach(doc => {
             const data = doc.data();
             const imgs = data.images || (data.image ? [data.image] : []);
+            const likes = data.likes || 0;
+            const dislikes = data.dislikes || 0;
             
             let carouselId = `slide-${doc.id}`;
             let carouselItems = imgs.map((url, i) => `
@@ -61,8 +98,8 @@
                 </div>`).join('');
             
             list.innerHTML += `
-                <div class="col-lg-4 col-md-6 col-11">
-                    <div class="gift-card">
+                <div class="col-lg-4 col-md-6 col-11 product-col" data-name="${data.name}">
+                    <div class="gift-card text-center">
                         <div id="${carouselId}" class="carousel slide" data-bs-ride="carousel">
                             <div class="carousel-inner">${carouselItems}</div>
                             ${imgs.length > 1 ? `
@@ -71,9 +108,19 @@
                             ` : ''}
                         </div>
                         <h3 class="mt-3" style="font-weight:700;">${data.name}</h3>
+                        
+                        <div class="d-flex justify-content-center gap-3 my-2">
+                            <button onclick="handleReaction('${doc.id}', 'likes')" class="reaction-btn btn-like">
+                                <i class="fas fa-thumbs-up text-success"></i> ${likes}
+                            </button>
+                            <button onclick="handleReaction('${doc.id}', 'dislikes')" class="reaction-btn btn-dislike">
+                                <i class="fas fa-thumbs-down text-danger"></i> ${dislikes}
+                            </button>
+                        </div>
+
                         <p class="price">${data.price} ج.م</p>
-                        <a href="https://wa.me/201289984200?text=أريد طلب: ${data.name}" class="btn btn-wa w-100 py-2">
-                            <i class="fab fa-whatsapp"></i> اطلب الآن هذا المنتج
+                        <a href="https://wa.me/201553179352?text=أهلاً سايكو، أريد طلب: ${data.name}" class="btn btn-wa w-100 py-2">
+                            <i class="fab fa-whatsapp"></i> اطلب الآن عبر واتساب
                         </a>
                     </div>
                 </div>`;
