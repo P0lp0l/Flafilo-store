@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SAIKO Admin | لوحة الإدارة 👑</title>
+    <title>SAIKO Admin | لوحة الإدارة الذكية 👑</title>
     
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -30,11 +30,12 @@
             100% { background-position: 50% 0%; }
         }
 
+        /* توضيح الخانات تماماً */
         .form-control { 
-            background: rgba(255, 255, 255, 0.95) !important; 
-            border: 2px solid #ff4d94;
+            background: rgba(255, 255, 255, 1) !important; 
+            border: 3px solid #ff4d94;
             color: #000 !important;
-            font-weight: bold;
+            font-weight: 900;
             border-radius: 12px;
             padding: 12px;
         }
@@ -60,43 +61,35 @@
             transition: 0.3s;
         }
 
-        /* ستايل بوكس التواصل التسويقي */
+        .stat-box { 
+            background: rgba(0, 0, 0, 0.3); 
+            border-radius: 20px; padding: 15px; text-align: center;
+            border: 1px solid #00d4ff;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        .stat-box h3 { color: #00d4ff; font-weight: 900; margin-bottom: 0; }
+        .stat-box small { color: #eee; font-size: 0.8rem; }
+
+        .table { color: #fff; background: rgba(0,0,0,0.3); border-radius: 15px; }
+        .prod-img { width: 60px; height: 60px; border-radius: 12px; object-fit: cover; border: 2px solid #fff; }
+
         .marketing-box {
-            text-align: center;
-            padding: 20px;
-            background: rgba(0,0,0,0.4);
-            border-radius: 20px;
-            border: 1px solid rgba(255,255,255,0.1);
-            margin-top: 25px;
+            text-align: center; padding: 20px; background: rgba(0,0,0,0.5);
+            border-radius: 20px; border: 1px solid rgba(255,255,255,0.1); margin-top: 25px;
         }
         .btn-wa { 
-            background: #25d366; 
-            color: white !important; 
-            border-radius: 50px; 
-            padding: 10px 25px; 
-            text-decoration: none; 
-            font-weight: bold; 
-            display: inline-block;
-            margin-top: 10px;
-            transition: 0.3s;
-        }
-        .btn-wa:hover { transform: scale(1.05); background: #1ebe57; }
-
-        .stat-box { 
-            background: rgba(255, 255, 255, 0.2); 
-            border-radius: 15px; padding: 15px; text-align: center;
-            border: 1px solid rgba(255,255,255,0.4);
+            background: #25d366; color: white !important; border-radius: 50px; 
+            padding: 10px 25px; text-decoration: none; font-weight: bold; display: inline-block;
         }
 
-        .table { color: #fff; background: rgba(0,0,0,0.2); }
-        .prod-img { width: 55px; height: 55px; border-radius: 10px; object-fit: cover; }
-
-        .made-by {
-            font-size: 0.8rem;
-            color: rgba(255,255,255,0.6);
-            margin-top: 20px;
-            font-weight: bold;
+        .comment-item {
+            background: rgba(255,255,255,0.1); border-radius: 8px;
+            padding: 5px 10px; margin-bottom: 5px; font-size: 0.75rem;
+            display: flex; justify-content: space-between; align-items: center;
         }
+        .is-pinned-admin { border-right: 4px solid #00d4ff; background: rgba(0,212,255,0.2); }
+
+        .made-by { font-size: 0.8rem; color: rgba(255,255,255,0.7); margin-top: 15px; font-weight: bold; }
     </style>
 </head>
 <body>
@@ -107,34 +100,30 @@
     <input type="email" id="login-email" class="form-control mb-3" placeholder="البريد الإلكتروني">
     <input type="password" id="login-password" class="form-control mb-3" placeholder="كلمة المرور">
     
-    <div class="d-flex justify-content-between align-items-center mb-4 px-2">
+    <div class="mb-3 px-2">
         <label style="cursor:pointer"><input type="checkbox" id="rememberMe"> تذكرني دائماً 💾</label>
     </div>
 
     <button class="btn-saiko w-100 mb-2" onclick="login()">دخول الحساب 🚀</button>
 
     <div class="marketing-box">
-        <p class="mb-1" style="color: #00d4ff; font-weight: bold;">تحتاج مساعدة؟</p>
         <p class="small mb-3">تواصل مع <b>SAIKO</b> لتنشيط حسابك، أو لطلب تصميم موقع احترافي خاص بك مثل هذا المتجر! ✨</p>
-        <a href="https://wa.me/201289984200" class="btn-wa">
-            <i class="fab fa-whatsapp"></i> تواصل مع المصمم الآن
-        </a>
+        <a href="https://wa.me/201289984200" class="btn-wa"><i class="fab fa-whatsapp"></i> تواصل مع المصمم الآن</a>
     </div>
-
-    <div class="text-center made-by">
-        Made with ❤️ by SAIKO
-    </div>
+    <div class="text-center made-by">Made with ❤️ by SAIKO</div>
 </div>
 
 <div id="admin-content" class="container" style="display: none;">
-    <div class="d-flex justify-content-between align-items-center mb-4 bg-dark p-3 rounded-pill">
-        <h4 class="mb-0">إدارة المتجر ⚙️</h4>
-        <button class="btn btn-danger btn-sm rounded-pill px-3" onclick="logout()">تسجيل الخروج <i class="fas fa-sign-out-alt"></i></button>
+    <div class="d-flex justify-content-between align-items-center mb-4 bg-dark p-3 rounded-pill shadow">
+        <h5 class="mb-0">إدارة متجر سايكو ⚙️</h5>
+        <button class="btn btn-danger btn-sm rounded-pill px-3" onclick="logout()">خروج <i class="fas fa-sign-out-alt"></i></button>
     </div>
 
     <div class="row g-3 mb-4">
-        <div class="col-6 col-md-3"><div class="stat-box"><small>إجمالي الهدايا</small><h3 id="total-p">0</h3></div></div>
-        <div class="col-6 col-md-3"><div class="stat-box"><small>تفاعل العملاء</small><h3 id="total-likes">0</h3></div></div>
+        <div class="col-6 col-md-3"><div class="stat-box"><small>زوار اليوم</small><h3 id="stat-day">0</h3></div></div>
+        <div class="col-6 col-md-3"><div class="stat-box"><small>زوار الشهر</small><h3 id="stat-month">0</h3></div></div>
+        <div class="col-6 col-md-3"><div class="stat-box"><small>زوار السنة</small><h3 id="stat-year">0</h3></div></div>
+        <div class="col-6 col-md-3"><div class="stat-box"><small>إجمالي الإعجابات</small><h3 id="total-likes">0</h3></div></div>
     </div>
 
     <div class="glass-card">
@@ -145,12 +134,12 @@
             <div class="col-12">
                 <div class="p-3 text-center" style="border: 2px dashed #fff; border-radius: 15px; cursor: pointer;" onclick="document.getElementById('p-files').click()">
                     <i class="fas fa-cloud-upload-alt fa-2x mb-2"></i>
-                    <p>ارفع صور منتجك الجديد هنا</p>
+                    <p>ارفع صور المنتج الجديد</p>
                     <input type="file" id="p-files" hidden multiple onchange="handleFiles(this.files)">
                 </div>
                 <div id="preview-container" class="d-flex flex-wrap gap-2 mt-2 justify-content-center"></div>
             </div>
-            <button class="btn-saiko w-100" onclick="addProduct()">إضافة للمتجر الآن 🎊</button>
+            <button class="btn-saiko w-100" onclick="addProduct()">نشر في المتجر 🎊</button>
         </div>
     </div>
 
@@ -161,16 +150,14 @@
                     <tr>
                         <th>المنتج</th>
                         <th>السعر</th>
-                        <th>إدارة</th>
+                        <th>الحالة</th>
+                        <th>التعليقات</th>
+                        <th>حذف</th>
                     </tr>
                 </thead>
                 <tbody id="product-list"></tbody>
             </table>
         </div>
-    </div>
-    
-    <div class="text-center pb-4 small" style="opacity: 0.6;">
-        تم التطوير بواسطة SAIKO &copy; 2026
     </div>
 </div>
 
@@ -180,7 +167,6 @@
 <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
 
 <script>
-    // إعدادات الـ Firebase (تأكد أنها نفس بياناتك)
     const firebaseConfig = { 
         apiKey: "AIzaSyDBfSCT_wePT2RexgcxZaz9NT9gWmXxgz0", 
         authDomain: "flafilo-store.firebaseapp.com", 
@@ -200,13 +186,13 @@
     auth.onAuthStateChanged(user => {
         document.getElementById('login-section').style.display = user ? 'none' : 'block';
         document.getElementById('admin-content').style.display = user ? 'block' : 'none';
-        if (user) loadProducts();
+        if (user) { loadProducts(); loadVisitorStats(); }
     });
 
     async function login() {
         const e = document.getElementById('login-email').value;
         const p = document.getElementById('login-password').value;
-        try { await auth.signInWithEmailAndPassword(e, p); } catch (err) { saikoToast("بيانات الدخول غير صحيحة ❌"); }
+        try { await auth.signInWithEmailAndPassword(e, p); } catch (err) { saikoToast("بيانات خاطئة ❌"); }
     }
 
     function logout() { auth.signOut(); }
@@ -225,8 +211,8 @@
     async function addProduct() {
         const name = document.getElementById('p-name').value;
         const price = document.getElementById('p-price').value;
-        if(!name || !price || selectedFiles.length === 0) return saikoToast("أكمل البيانات أولاً ✨");
-        saikoToast("جاري المعالجة والرفع... 🚀");
+        if(!name || !price || selectedFiles.length === 0) return saikoToast("أكمل البيانات ✨");
+        saikoToast("جاري الرفع... 🚀");
         let urls = [];
         try {
             for (let file of selectedFiles) {
@@ -234,9 +220,9 @@
                 const res = await fetch(`https://api.imgbb.com/1/upload?key=Ff535d677000fe55d5f463ccfdadc283`, { method: 'POST', body: fd });
                 const data = await res.json(); urls.push(data.data.url);
             }
-            await db.collection("gifts").add({ name, price, images: urls, likes: 0, dislikes: 0, createdAt: new Date() });
+            await db.collection("gifts").add({ name, price, images: urls, likes: 0, dislikes: 0, commentsDisabled: false, createdAt: new Date() });
             location.reload();
-        } catch (e) { saikoToast("فشل في الرفع ❌"); }
+        } catch (e) { saikoToast("فشل الرفع ❌"); }
     }
 
     function loadProducts() {
@@ -244,25 +230,73 @@
             const list = document.getElementById('product-list');
             list.innerHTML = '';
             let totalL = 0;
-            document.getElementById('total-p').innerText = snap.size;
             snap.forEach(doc => {
                 const p = doc.data();
                 totalL += (p.likes || 0);
                 list.innerHTML += `
                     <tr class="border-bottom border-secondary">
-                        <td><img src="${p.images[0]}" class="prod-img me-2"><br><small>${p.name}</small></td>
-                        <td>${p.price}ج.م</td>
+                        <td><img src="${p.images[0]}" class="prod-img"><br><small>${p.name}</small></td>
+                        <td>${p.price}ج</td>
                         <td>
-                            <button class="btn btn-sm btn-danger rounded-pill" onclick="deleteItem('${doc.id}')"><i class="fas fa-trash"></i></button>
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" ${p.commentsDisabled ? '' : 'checked'} onclick="toggleComments('${doc.id}', ${p.commentsDisabled})">
+                                <br><small style="font-size:0.6rem">${p.commentsDisabled ? 'مغلق' : 'مفتوح'}</small>
+                            </div>
                         </td>
+                        <td><div id="comm-${doc.id}" style="max-height:80px; overflow-y:auto; width:150px"></div></td>
+                        <td><button class="btn btn-sm btn-danger" onclick="deleteItem('${doc.id}')"><i class="fas fa-trash"></i></button></td>
                     </tr>`;
+                loadComments(doc.id);
             });
             document.getElementById('total-likes').innerText = totalL;
         });
     }
 
-    async function deleteItem(id) { 
-        if(confirm("حذف المنتج؟")) await db.collection("gifts").doc(id).delete();
+    function loadComments(productId) {
+        db.collection("gifts").doc(productId).collection("comments").orderBy("pinned", "desc").orderBy("createdAt", "desc").onSnapshot(snap => {
+            const box = document.getElementById(`comm-${productId}`);
+            if(!box) return; box.innerHTML = '';
+            snap.forEach(d => {
+                const c = d.data();
+                box.innerHTML += `
+                    <div class="comment-item ${c.pinned ? 'is-pinned-admin' : ''}">
+                        <span class="text-truncate" style="max-width:80px">${c.text}</span>
+                        <span>
+                            <i class="fas fa-thumbtack me-1 ${c.pinned ? 'text-info' : 'text-muted'}" style="cursor:pointer" onclick="togglePin('${productId}','${d.id}',${c.pinned})"></i>
+                            <i class="fas fa-times text-danger" style="cursor:pointer" onclick="deleteComment('${productId}','${d.id}')"></i>
+                        </span>
+                    </div>`;
+            });
+        });
+    }
+
+    async function toggleComments(id, currentStatus) {
+        await db.collection("gifts").doc(id).update({ commentsDisabled: !currentStatus });
+        saikoToast(!currentStatus ? "تم قفل التعليقات" : "تم فتح التعليقات");
+    }
+
+    async function togglePin(pId, cId, current) {
+        await db.collection("gifts").doc(pId).collection("comments").doc(cId).update({ pinned: !current });
+    }
+
+    async function deleteItem(id) { if(confirm("حذف المنتج؟")) await db.collection("gifts").doc(id).delete(); }
+    async function deleteComment(pId, cId) { await db.collection("gifts").doc(pId).collection("comments").doc(cId).delete(); }
+
+    function loadVisitorStats() {
+        const now = new Date();
+        const dateStr = now.toISOString().split('T')[0];
+        const monthStr = dateStr.substring(0, 7);
+        const yearStr = dateStr.substring(0, 4);
+
+        db.collection("stats").doc("daily").collection("days").doc(dateStr).onSnapshot(d => {
+            document.getElementById('stat-day').innerText = d.exists ? d.data().count : 0;
+        });
+        db.collection("stats").doc("monthly").collection("months").doc(monthStr).onSnapshot(d => {
+            document.getElementById('stat-month').innerText = d.exists ? d.data().count : 0;
+        });
+        db.collection("stats").doc("yearly").collection("years").doc(yearStr).onSnapshot(d => {
+            document.getElementById('stat-year').innerText = d.exists ? d.data().count : 0;
+        });
     }
 </script>
 </body>
