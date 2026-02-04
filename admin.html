@@ -55,6 +55,16 @@
         .table { color: #fff; background: rgba(0,0,0,0.3); border-radius: 15px; }
         .prod-img { width: 60px; height: 60px; border-radius: 12px; object-fit: cover; border: 2px solid #fff; }
 
+        /* رسالة التواصل */
+        .marketing-box {
+            text-align: center; padding: 20px; background: rgba(0,0,0,0.5);
+            border-radius: 20px; border: 1px solid rgba(255,255,255,0.1); margin-top: 25px;
+        }
+        .btn-wa { 
+            background: #25d366; color: white !important; border-radius: 50px; 
+            padding: 10px 25px; text-decoration: none; font-weight: bold; display: inline-block;
+        }
+
         .comment-item {
             background: rgba(255,255,255,0.1); border-radius: 8px;
             padding: 5px 10px; margin-bottom: 5px; font-size: 0.75rem;
@@ -70,12 +80,17 @@
     <input type="email" id="login-email" class="form-control mb-3" placeholder="البريد الإلكتروني">
     <input type="password" id="login-password" class="form-control mb-3" placeholder="كلمة المرور">
     <button class="btn-saiko w-100" onclick="login()">دخول الحساب 🚀</button>
+    
+    <div class="marketing-box">
+        <p class="small mb-3">تواصل مع <b>SAIKO</b> لتنشيط حسابك، أو لطلب تصميم موقع احترافي خاص بك مثل هذا المتجر! ✨</p>
+        <a href="https://wa.me/201289984200" class="btn-wa"><i class="fab fa-whatsapp"></i> تواصل مع المصمم الآن</a>
+    </div>
 </div>
 
 <div id="admin-content" class="container" style="display: none;">
-    <div class="d-flex justify-content-between align-items-center mb-4 bg-dark p-3 rounded-pill">
+    <div class="d-flex justify-content-between align-items-center mb-4 bg-dark p-3 rounded-pill shadow">
         <h5 class="mb-0 px-3">إدارة المتجر ⚙️</h5>
-        <button class="btn btn-danger btn-sm rounded-pill px-3" onclick="logout()">خروج</button>
+        <button class="btn btn-danger btn-sm rounded-pill px-3" onclick="logout()">خروج <i class="fas fa-sign-out-alt"></i></button>
     </div>
 
     <div class="row g-3 mb-4 text-center">
@@ -91,7 +106,9 @@
             <div class="stat-box">
                 <small>الزيارات (يوم | شهر | سنة) 📊</small>
                 <h3 id="visitor-summary">0 | 0 | 0</h3>
-                <p class="mb-0 mt-1" style="font-size: 0.8rem; color: #00d4ff;">إجمالي الزيارات الفعلي: <span id="total-v-all">0</span></p>
+                <p class="mb-0 mt-1" style="font-size: 0.8rem; color: #00d4ff; font-weight: bold;">
+                    إجمالي الزيارات الفعلي: <span id="total-v-all">0</span>
+                </p>
                 <button onclick="resetStats()" class="btn btn-sm btn-outline-warning mt-2 rounded-pill" style="font-size: 0.6rem;">
                     <i class="fas fa-undo"></i> تصفير العداد
                 </button>
@@ -181,8 +198,8 @@
 
     async function resetStats() {
         Swal.fire({
-            title: 'تصفير العداد؟', text: "سيتم مسح إحصائيات الزوار الحالية!", icon: 'warning',
-            showCancelButton: true, confirmButtonColor: '#ff4d94', confirmButtonText: 'نعم، تصفير'
+            title: 'تصفير العداد؟', text: "سيتم مسح إحصائيات الزوار الحالية نهائياً!", icon: 'warning',
+            showCancelButton: true, confirmButtonColor: '#ff4d94', confirmButtonText: 'نعم، تصفير العداد'
         }).then(async (result) => {
             if (result.isConfirmed) {
                 const now = new Date(), dStr = now.toISOString().split('T')[0], mStr = dStr.substring(0, 7), yStr = dStr.substring(0, 4);
@@ -191,7 +208,7 @@
                 batch.delete(db.collection("stats").doc("monthly").collection("months").doc(mStr));
                 batch.delete(db.collection("stats").doc("yearly").collection("years").doc(yStr));
                 await batch.commit();
-                Swal.fire('تم!', 'تم تصفير العداد بنجاح.', 'success');
+                Swal.fire('تم التصفير!', 'عاد عداد الزوار للصفر.', 'success');
             }
         });
     }
@@ -224,12 +241,20 @@
             const box = document.getElementById(`comm-${productId}`); if(!box) return; box.innerHTML = '';
             snap.forEach(d => {
                 const c = d.data();
-                box.innerHTML += `<div class="comment-item ${c.pinned ? 'is-pinned-admin' : ''}">
+                box.innerHTML += `
+                <div class="comment-item ${c.pinned ? 'is-pinned-admin' : ''}">
                     <span class="text-truncate" style="max-width:80px">${c.text}</span>
-                    <span><i class="fas fa-times text-danger" style="cursor:pointer" onclick="deleteComment('${productId}','${d.id}')"></i></span>
+                    <span>
+                        <i class="fas fa-thumbtack me-1 ${c.pinned ? 'text-info' : 'text-muted'}" style="cursor:pointer" onclick="togglePin('${productId}','${d.id}',${c.pinned})"></i>
+                        <i class="fas fa-times text-danger" style="cursor:pointer" onclick="deleteComment('${productId}','${d.id}')"></i>
+                    </span>
                 </div>`;
             });
         });
+    }
+
+    async function togglePin(pId, cId, current) {
+        await db.collection("gifts").doc(pId).collection("comments").doc(cId).update({ pinned: !current });
     }
 
     let selectedFiles = [];
@@ -265,4 +290,3 @@
 </script>
 </body>
 </html>
-
