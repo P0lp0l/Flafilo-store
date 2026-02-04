@@ -10,87 +10,67 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap');
         
-        /* خلفية سائلة سريعة الحركة */
+        /* تدرج الألوان المطلوب: من الفاتح (بنببي/أحمر) للغامق (أزرق/بنفسجي) */
         body { 
             margin: 0; padding: 0; font-family: 'Cairo', sans-serif; overflow-x: hidden;
-            background: linear-gradient(45deg, #ff9a9e, #fad0c4, #ffdde1, #ee9ca7, #ff4d94);
+            background: linear-gradient(135deg, #ffafbd, #ffc3a0, #ff5f6d, #6a11cb, #2575fc, #0f0c29);
             background-size: 400% 400%;
-            animation: liquidFlow 6s ease infinite; /* سرعة أكبر في خلط الألوان */
-            color: #444;
+            animation: deepFlow 8s ease infinite;
+            color: #fff;
         }
 
-        @keyframes liquidFlow {
+        @keyframes deepFlow {
             0% { background-position: 0% 50%; }
             50% { background-position: 100% 50%; }
             100% { background-position: 0% 50%; }
         }
 
-        /* تساقط البالونات */
         .balloon {
-            position: fixed; top: -50px;
-            font-size: 2rem;
-            z-index: 0;
-            user-select: none;
-            animation: fall linear infinite;
+            position: fixed; top: -50px; font-size: 1.8rem; z-index: 0;
+            user-select: none; animation: fall linear infinite;
         }
-
-        @keyframes fall {
-            to { transform: translateY(110vh) rotate(360deg); }
-        }
+        @keyframes fall { to { transform: translateY(110vh) rotate(360deg); } }
 
         .container { position: relative; z-index: 1; }
 
         .gift-card { 
-            background: rgba(255, 255, 255, 0.9); 
-            border-radius: 30px; border: none; padding: 20px; 
-            margin-bottom: 30px; transition: 0.3s;
-            box-shadow: 0 15px 35px rgba(255, 77, 148, 0.15);
+            background: rgba(255, 255, 255, 0.15); 
+            border-radius: 30px; border: 1px solid rgba(255,255,255,0.2); padding: 20px; 
+            margin-bottom: 30px; backdrop-filter: blur(15px); transition: 0.3s;
         }
-        .gift-card:hover { transform: translateY(-10px); }
+        .gift-card:hover { transform: translateY(-5px); background: rgba(255, 255, 255, 0.2); }
 
-        .carousel-item img { height: 320px; object-fit: cover; border-radius: 20px; }
+        .carousel-item img { height: 320px; object-fit: cover; border-radius: 20px; width: 100%; }
         
-        /* التفاعلات */
+        /* التفاعلات: إعجاب وعدم إعجاب */
         .reaction-container { display: flex; justify-content: center; gap: 30px; margin: 20px 0; }
-        .vote-text { font-size: 1.1rem; font-weight: bold; color: #bbb; transition: 0.3s; cursor: pointer; }
-        .active-like .vote-text { color: #ff4d94 !important; text-shadow: 0 0 10px rgba(255, 77, 148, 0.3); }
+        .react-group { cursor: pointer; text-align: center; }
+        .vote-text { font-size: 1.1rem; font-weight: bold; color: rgba(255,255,255,0.5); transition: 0.3s; }
+        .active-like .vote-text { color: #00ff88 !important; text-shadow: 0 0 10px #00ff88; }
+        .active-dislike .vote-text { color: #ff4d4d !important; text-shadow: 0 0 10px #ff4d4d; }
 
-        /* منطقة التعليقات */
         .comments-area { 
-            background: #fff; border-radius: 20px; padding: 15px; margin-top: 15px; 
-            max-height: 250px; overflow-y: auto; border: 1px solid #fce4ec;
+            background: rgba(0,0,0,0.2); border-radius: 20px; padding: 15px; margin-top: 15px; 
+            max-height: 250px; overflow-y: auto; text-align: right;
         }
         .comment-item { 
-            background: #fff5f8; padding: 12px; border-radius: 15px; 
-            margin-bottom: 8px; border-right: 5px solid #ff4d94; position: relative;
+            background: rgba(255,255,255,0.1); padding: 10px; border-radius: 15px; 
+            margin-bottom: 8px; border-right: 4px solid #ff4d94;
         }
-        
-        .del-btn { 
-            color: #ff4d4d; font-size: 0.7rem; cursor: pointer; float: left; 
-            background: #ffebee; border-radius: 8px; padding: 2px 8px; font-weight: bold;
-        }
+        .del-btn { color: #ff4d4d; font-size: 0.75rem; cursor: pointer; float: left; font-weight: bold; }
 
         .comment-input-group { display: flex; gap: 10px; margin-top: 15px; }
         .comment-field { 
-            border: 2px solid #ffdde1; border-radius: 25px; padding: 10px 20px; 
-            flex-grow: 1; outline: none; transition: 0.3s;
+            background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.3); 
+            border-radius: 25px; padding: 10px 20px; flex-grow: 1; outline: none; color: white;
         }
-        .comment-field:focus { border-color: #ff4d94; }
-        .send-btn { 
-            background: #ff4d94; border: none; border-radius: 50%; width: 45px; 
-            height: 45px; color: white; transition: 0.3s;
-        }
-        .send-btn:hover { transform: rotate(-20deg) scale(1.1); }
+        .send-btn { background: #ff4d94; border: none; border-radius: 50%; width: 45px; height: 45px; color: white; }
 
-        .price { color: #ff4d94; font-size: 1.8rem; font-weight: 900; }
-        .btn-wa { 
-            background: linear-gradient(45deg, #ff4d94, #ff758c); color: white; 
-            border-radius: 50px; font-weight: bold; padding: 12px; text-decoration: none; 
-            display: block; box-shadow: 0 5px 15px rgba(255, 77, 148, 0.3);
-        }
+        .price { color: #00d4ff; font-size: 1.8rem; font-weight: 900; }
+        .btn-wa { background: #25d366; color: white; border-radius: 50px; font-weight: bold; padding: 12px; text-decoration: none; display: block; }
         
-        footer { padding: 40px 0; font-weight: bold; }
-        .footer-signature { font-size: 2.2rem; font-weight: 900; color: #ff4d94; text-shadow: 2px 2px 0px #fff; }
+        footer { padding: 40px 0; }
+        .footer-signature { font-size: 2.2rem; font-weight: 900; color: #fff; text-shadow: 0 0 15px #ff4d94; }
     </style>
 </head>
 <body>
@@ -98,34 +78,29 @@
 <div id="balloon-container"></div>
 
 <div class="container py-5 text-center">
-    <h1 class="display-4 mb-5" style="font-weight:900; color:#fff; text-shadow: 3px 3px 10px rgba(255, 77, 148, 0.5);">SAIKO Store 💝</h1>
+    <h1 class="display-4 mb-5" style="font-weight:900;">SAIKO Store 💝</h1>
     <div id="products-list" class="row justify-content-center"></div>
 </div>
 
 <footer class="text-center">
     <div class="footer-signature">SAIKO Store</div>
-    <p class="mt-2" style="color: #fff; background: rgba(255,255,255,0.2); display: inline-block; padding: 5px 20px; border-radius: 20px;">
-        &copy; 2026 جميع الحقوق محفوظ
-    </p>
+    <p class="mt-2" style="color: rgba(255,255,255,0.7);">صنع بكل حب لعشاق التميز 🎈</p>
 </footer>
 
 <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore-compat.js"></script>
 
 <script>
-    // إنشاء البالونات المتساقطة
     function createBalloon() {
         const container = document.getElementById('balloon-container');
-        const balloon = document.createElement('div');
-        balloon.className = 'balloon';
-        balloon.innerText = '🎈';
-        balloon.style.left = Math.random() * 100 + 'vw';
-        balloon.style.animationDuration = (Math.random() * 3 + 4) + 's';
-        balloon.style.opacity = Math.random();
-        container.appendChild(balloon);
-        setTimeout(() => balloon.remove(), 7000);
+        const b = document.createElement('div');
+        b.className = 'balloon'; b.innerText = '🎈';
+        b.style.left = Math.random() * 100 + 'vw';
+        b.style.animationDuration = (Math.random() * 3 + 4) + 's';
+        container.appendChild(b);
+        setTimeout(() => b.remove(), 7000);
     }
-    setInterval(createBalloon, 600);
+    setInterval(createBalloon, 800);
 
     const firebaseConfig = {
         apiKey: "AIzaSyDBfSCT_wePT2RexgcxZaz9NT9gWmXxgz0",
@@ -142,7 +117,6 @@
         localStorage.setItem('saiko_user_id', 'u_' + Math.random().toString(36).substr(2, 9));
     }
 
-    // جلب المنتجات
     db.collection("gifts").orderBy("createdAt", "desc").onSnapshot(snap => {
         const list = document.getElementById('products-list');
         list.innerHTML = '';
@@ -158,15 +132,19 @@
                     <div class="gift-card">
                         <div id="${carouselId}" class="carousel slide" data-bs-ride="carousel">
                             <div class="carousel-inner">${carouselItems}</div>
+                            ${imgs.length > 1 ? `<button class="carousel-control-prev" data-bs-target="#${carouselId}" data-bs-slide="prev"><span class="carousel-control-prev-icon"></span></button><button class="carousel-control-next" data-bs-target="#${carouselId}" data-bs-slide="next"><span class="carousel-control-next-icon"></span></button>` : ''}
                         </div>
                         <h3 class="mt-4">${data.name}</h3>
                         <div class="reaction-container">
                             <div class="react-group ${choice === 'likes' ? 'active-like' : ''}" onclick="handleVote('${doc.id}', 'likes')">
-                                <span class="vote-text">أعجبني</span> <br> <span class="badge bg-pink text-white" style="background:#ff4d94">${data.likes || 0}</span>
+                                <span class="vote-text">أعجبني</span> <br> <span class="badge bg-dark">${data.likes || 0}</span>
+                            </div>
+                            <div class="react-group ${choice === 'dislikes' ? 'active-dislike' : ''}" onclick="handleVote('${doc.id}', 'dislikes')">
+                                <span class="vote-text">لم يعجبني</span> <br> <span class="badge bg-dark">${data.dislikes || 0}</span>
                             </div>
                         </div>
                         <p class="price">${data.price} ج.م</p>
-                        <a href="https://wa.me/201289984200?text=طلب: ${data.name}" class="btn-wa">اطلبه الآن 🌸</a>
+                        <a href="https://wa.me/201289984200?text=طلب: ${data.name}" class="btn-wa">اطلب عبر واتساب 🌸</a>
                         <div class="comments-area" id="box-${doc.id}"></div>
                         <div class="comment-input-group">
                             <input type="text" id="inp-${doc.id}" class="comment-field" placeholder="اكتب تعليقاً...">
@@ -180,10 +158,8 @@
 
     async function handleVote(id, type) {
         const key = `voted_${id}`;
-        if (localStorage.getItem(key)) {
-            Swal.fire({ icon: 'info', title: 'عذراً!', text: 'لقد قمت بالتفاعل مسبقاً ✨', timer: 2000, showConfirmButton: false });
-            return;
-        }
+        const last = localStorage.getItem(key);
+        if (last) return;
         await db.collection("gifts").doc(id).update({ [type]: firebase.firestore.FieldValue.increment(1) });
         localStorage.setItem(key, type);
     }
@@ -194,7 +170,7 @@
             if(!area) return;
             let arr = []; snap.forEach(d => arr.push({id: d.id, ...d.data()}));
             arr.sort((a,b) => (b.isPinned||false) - (a.isPinned||false));
-            area.innerHTML = arr.length === 0 ? '<small class="text-muted">لا يوجد تعليقات..</small>' : '';
+            area.innerHTML = arr.length === 0 ? '<small>لا تعليقات..</small>' : '';
             const myId = localStorage.getItem('saiko_user_id');
             arr.forEach(c => {
                 area.innerHTML += `
@@ -214,23 +190,15 @@
             isPinned: false, createdAt: firebase.firestore.FieldValue.serverTimestamp()
         });
         inp.value = '';
-        Swal.fire({ icon: 'success', title: 'تم!', text: 'أضيف تعليقك بنجاح 💖', timer: 1500, showConfirmButton: false });
+        Swal.fire({ icon: 'success', title: 'تم!', timer: 1000, showConfirmButton: false });
     }
 
     async function deleteComment(pId, cId) {
         Swal.fire({
-            title: 'هل أنت متأكد؟',
-            text: "لن تتمكن من استرجاع التعليق!",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#ff4d94',
-            cancelButtonColor: '#aaa',
-            confirmButtonText: 'نعم، احذفه!',
-            cancelButtonText: 'إلغاء'
-        }).then(async (result) => {
-            if (result.isConfirmed) {
+            title: 'حذف؟', icon: 'warning', showCancelButton: true, confirmButtonText: 'نعم'
+        }).then(async (res) => {
+            if (res.isConfirmed) {
                 await db.collection("gifts").doc(pId).collection("comments").doc(cId).delete();
-                Swal.fire('تم الحذف!', 'تم مسح تعليقك.', 'success');
             }
         });
     }
