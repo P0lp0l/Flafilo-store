@@ -35,6 +35,9 @@
             color: #000 !important; font-weight: 700; border-radius: 10px;
         }
 
+        /* تنسيق بسيط لشريط البحث ليناسب تصميمك */
+        .search-container { margin-bottom: 15px; }
+
         .btn-action {
             border-radius: 50px; font-weight: 700; padding: 8px 20px; transition: 0.3s;
             border: none; color: white; display: inline-flex; align-items: center; gap: 8px;
@@ -58,16 +61,6 @@
             border-right: 3px solid #6a11cb;
         }
         .is-pinned-admin { border-right-color: #00d4ff; background: rgba(0,212,255,0.1); }
-
-        /* تعديل ألوان الدبوس ليكون واضحاً */
-        .pin-btn { 
-            font-size: 1.1rem; 
-            transition: 0.3s; 
-            cursor: pointer;
-        }
-        .pin-active { color: #FFD700 !important; text-shadow: 0 0 10px rgba(255, 215, 0, 0.5); }
-        .pin-inactive { color: #ffffff !important; opacity: 0.6; }
-        .pin-inactive:hover { opacity: 1; }
 
         .marketing-box {
             text-align: center; padding: 15px; background: rgba(0,0,0,0.4);
@@ -94,13 +87,6 @@
     </div>
 
     <button class="btn-action btn-saiko w-100" onclick="login()">دخول 🚀</button>
-    
-    <div class="marketing-box">
-        <p class="mb-2">تواصل مع <b>SAIKO</b> لتنشيط حسابك، أو لطلب تصميم موقع احترافي خاص بك مثل هذا المتجر! ✨</p>
-        <a href="https://wa.me/201553179352?text=أهلاً%20SAIKO،%20كنت%20عايز%20أعرف%20تفاصيل%20أكثر%20عن%20الموقع%20والسعر%20لو%20سمحت" class="btn-action" style="background:#25d366; text-decoration:none;">
-            <i class="fab fa-whatsapp"></i> تواصل مع المصمم الآن
-        </a>
-    </div>
 </div>
 
 <div id="admin-content" class="container" style="display: none;">
@@ -157,9 +143,13 @@
         </div>
     </div>
 
+    <div class="search-container">
+        <input type="text" id="adminSearchInput" class="form-control" placeholder="🔍 ابحث عن منتج بالاسم أو السعر..." onkeyup="filterAdminProducts()">
+    </div>
+
     <div class="glass-card border-0">
         <div class="table-responsive">
-            <table class="table table-dark table-hover align-middle mb-0">
+            <table class="table table-dark table-hover align-middle mb-0" id="adminProductTable">
                 <thead>
                     <tr><th>المنتج</th><th>السعر</th><th>التعليقات</th><th>إجراء</th></tr>
                 </thead>
@@ -190,6 +180,16 @@
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
     const db = firebase.firestore();
+
+    // دالة البحث المضافة
+    function filterAdminProducts() {
+        let input = document.getElementById('adminSearchInput').value.toLowerCase();
+        let rows = document.getElementById('product-list').getElementsByTagName('tr');
+        for (let row of rows) {
+            let text = row.innerText.toLowerCase();
+            row.style.display = text.includes(input) ? '' : 'none';
+        }
+    }
 
     function saikoToast(msg) {
         Toastify({ text: msg, duration: 2000, style: { background: "#ff4d94" } }).showToast();
@@ -239,6 +239,7 @@
                 loadComments(doc.id);
             });
             document.getElementById('total-likes').innerText = totalL;
+            filterAdminProducts(); // لضمان بقاء البحث فعالاً عند تحديث البيانات
         });
     }
 
@@ -247,13 +248,11 @@
             const box = document.getElementById(`comm-${productId}`); if(!box) return; box.innerHTML = '';
             snap.forEach(d => {
                 const c = d.data();
-                // هنا التعديل: استبدال الكلاسات بألوان مخصصة واضحة جداً
                 box.innerHTML += `
                 <div class="comment-item ${c.pinned ? 'is-pinned-admin' : ''}">
                     <span class="text-truncate" style="max-width:100px">${c.text}</span>
                     <span>
-                        <i class="fas fa-thumbtack me-2 pin-btn ${c.pinned ? 'pin-active' : 'pin-inactive'}" 
-                           onclick="togglePin('${productId}','${d.id}',${c.pinned})"></i>
+                        <i class="fas fa-thumbtack me-2 ${c.pinned ? 'text-info' : 'text-muted'}" style="cursor:pointer" onclick="togglePin('${productId}','${d.id}',${c.pinned})"></i>
                         <i class="fas fa-trash-alt text-danger" style="cursor:pointer" onclick="confirmDeleteComment('${productId}','${d.id}')"></i>
                     </span>
                 </div>`;
@@ -349,4 +348,3 @@
 </script>
 </body>
 </html>
-
