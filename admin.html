@@ -12,149 +12,165 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap');
         
-        :root {
-            --bg-dark: #0f111a;
-            --card-bg: #1a1d2b;
-            --accent: #6c5ce7; /* بنفسجي هادي */
-            --text-main: #e0e0e0;
-            --gold: #f1c40f;
-        }
-
         body { 
             font-family: 'Cairo', sans-serif; 
-            background-color: var(--bg-dark);
-            color: var(--text-main);
+            margin: 0; padding: 0; overflow-x: hidden;
+            background: linear-gradient(0deg, #0f0c29, #302b63, #6a11cb, #2575fc, #8e44ad, #a52a2a, #ff4d94, #ffafbd);
+            background-size: 100% 400%;
+            background-attachment: fixed;
+            animation: verticalFlow 12s linear infinite;
+            color: #fff;
             min-height: 100vh;
             padding: 20px;
         }
 
-        /* الكروت المتناسقة */
-        .glass-card { 
-            background: var(--card-bg);
-            border-radius: 20px;
-            border: 1px solid rgba(255,255,255,0.05);
-            padding: 25px;
-            margin-bottom: 25px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        @keyframes verticalFlow {
+            0% { background-position: 50% 0%; }
+            50% { background-position: 50% 100%; }
+            100% { background-position: 50% 0%; }
         }
 
-        /* الإحصائيات بألوان هادية */
-        .stat-box { 
-            background: rgba(108, 92, 231, 0.1); 
-            border: 1px solid var(--accent);
-            border-radius: 15px;
-            padding: 20px;
-            text-align: center;
-        }
-        .stat-box h2 { color: var(--gold); font-weight: 900; }
-
-        /* المدخلات (بشكل نظيف) */
         .form-control { 
-            background: #25293d !important; 
-            border: 1px solid #3d4461;
-            color: #fff !important;
-            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.95) !important; 
+            border: 2px solid #ff4d94;
+            color: #000 !important;
+            font-weight: bold;
+            border-radius: 12px;
             padding: 12px;
         }
-        .form-control:focus { border-color: var(--accent); box-shadow: none; }
 
-        /* أزرار متناسقة */
+        .glass-card { 
+            background: rgba(255, 255, 255, 0.15); 
+            border-radius: 25px;
+            border: 1px solid rgba(255,255,255,0.3);
+            padding: 25px;
+            margin-bottom: 25px;
+            backdrop-filter: blur(15px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
         .btn-saiko {
-            background: var(--accent);
+            background: #ff4d94;
             color: white !important;
-            font-weight: 700;
+            font-weight: 900;
             border: none;
-            border-radius: 12px;
-            padding: 12px 25px;
+            border-radius: 50px;
+            padding: 12px 30px;
+            box-shadow: 0 5px 15px rgba(255, 77, 148, 0.4);
             transition: 0.3s;
         }
-        .btn-saiko:hover { background: #5b4cc4; transform: translateY(-2px); }
 
-        /* الجدول */
-        .table { color: var(--text-main); border-color: #3d4461; }
-        .table thead { background: rgba(255,255,255,0.02); color: var(--gold); }
-        
-        .prod-img { width: 60px; height: 60px; border-radius: 10px; object-fit: cover; border: 1px solid #3d4461; }
-
-        /* منطقة التعليقات */
-        .comment-item {
-            background: rgba(255,255,255,0.03);
-            border-radius: 8px;
-            padding: 8px 12px;
-            margin-bottom: 5px;
-            font-size: 0.85rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+        /* ستايل بوكس التواصل التسويقي */
+        .marketing-box {
+            text-align: center;
+            padding: 20px;
+            background: rgba(0,0,0,0.4);
+            border-radius: 20px;
+            border: 1px solid rgba(255,255,255,0.1);
+            margin-top: 25px;
         }
-        .is-pinned-admin { border-right: 3px solid var(--gold); background: rgba(241, 196, 15, 0.05); }
-        
-        .pin-active { color: var(--gold) !important; }
+        .btn-wa { 
+            background: #25d366; 
+            color: white !important; 
+            border-radius: 50px; 
+            padding: 10px 25px; 
+            text-decoration: none; 
+            font-weight: bold; 
+            display: inline-block;
+            margin-top: 10px;
+            transition: 0.3s;
+        }
+        .btn-wa:hover { transform: scale(1.05); background: #1ebe57; }
+
+        .stat-box { 
+            background: rgba(255, 255, 255, 0.2); 
+            border-radius: 15px; padding: 15px; text-align: center;
+            border: 1px solid rgba(255,255,255,0.4);
+        }
+
+        .table { color: #fff; background: rgba(0,0,0,0.2); }
+        .prod-img { width: 55px; height: 55px; border-radius: 10px; object-fit: cover; }
+
+        .made-by {
+            font-size: 0.8rem;
+            color: rgba(255,255,255,0.6);
+            margin-top: 20px;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
 
-<div id="login-section" class="glass-card" style="max-width: 400px; margin: 100px auto;">
-    <h3 class="text-center mb-4">🔐 دخول الإدارة</h3>
+<div id="login-section" class="glass-card" style="max-width: 450px; margin: 60px auto;">
+    <h2 class="text-center mb-4" style="font-weight: 900;">لوحة تحكم سايكو 🎈</h2>
+    
     <input type="email" id="login-email" class="form-control mb-3" placeholder="البريد الإلكتروني">
-    <input type="password" id="login-password" class="form-control mb-4" placeholder="كلمة المرور">
-    <button class="btn-saiko w-100" onclick="login()">دخول</button>
+    <input type="password" id="login-password" class="form-control mb-3" placeholder="كلمة المرور">
+    
+    <div class="d-flex justify-content-between align-items-center mb-4 px-2">
+        <label style="cursor:pointer"><input type="checkbox" id="rememberMe"> تذكرني دائماً 💾</label>
+    </div>
+
+    <button class="btn-saiko w-100 mb-2" onclick="login()">دخول الحساب 🚀</button>
+
+    <div class="marketing-box">
+        <p class="mb-1" style="color: #00d4ff; font-weight: bold;">تحتاج مساعدة؟</p>
+        <p class="small mb-3">تواصل مع <b>SAIKO</b> لتنشيط حسابك، أو لطلب تصميم موقع احترافي خاص بك مثل هذا المتجر! ✨</p>
+        <a href="https://wa.me/201289984200" class="btn-wa">
+            <i class="fab fa-whatsapp"></i> تواصل مع المصمم الآن
+        </a>
+    </div>
+
+    <div class="text-center made-by">
+        Made with ❤️ by SAIKO
+    </div>
 </div>
 
 <div id="admin-content" class="container" style="display: none;">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 class="fw-900">لوحة التحكم ⚙️</h2>
-        <button class="btn btn-outline-secondary btn-sm rounded-pill" onclick="logout()">خروج</button>
+    <div class="d-flex justify-content-between align-items-center mb-4 bg-dark p-3 rounded-pill">
+        <h4 class="mb-0">إدارة المتجر ⚙️</h4>
+        <button class="btn btn-danger btn-sm rounded-pill px-3" onclick="logout()">تسجيل الخروج <i class="fas fa-sign-out-alt"></i></button>
     </div>
 
     <div class="row g-3 mb-4">
-        <div class="col-6 col-md-3">
-            <div class="stat-box">
-                <small>القطع</small>
-                <h2 id="total-p" class="mb-0">0</h2>
-            </div>
-        </div>
-        <div class="col-6 col-md-3">
-            <div class="stat-box">
-                <small>الإعجابات</small>
-                <h2 id="total-likes" class="mb-0">0</h2>
-            </div>
-        </div>
+        <div class="col-6 col-md-3"><div class="stat-box"><small>إجمالي الهدايا</small><h3 id="total-p">0</h3></div></div>
+        <div class="col-6 col-md-3"><div class="stat-box"><small>تفاعل العملاء</small><h3 id="total-likes">0</h3></div></div>
     </div>
 
     <div class="glass-card">
-        <h5 class="mb-4"><i class="fas fa-plus-circle me-2"></i> إضافة منتج جديد</h5>
+        <h5 class="mb-3">إضافة قطعة فنية جديدة ✨</h5>
         <div class="row g-3">
             <div class="col-md-6"><input type="text" id="p-name" class="form-control" placeholder="اسم المنتج"></div>
             <div class="col-md-6"><input type="number" id="p-price" class="form-control" placeholder="السعر"></div>
             <div class="col-12">
-                <div class="p-4 text-center" style="border: 2px dashed #3d4461; border-radius: 15px; cursor: pointer;" onclick="document.getElementById('p-files').click()">
-                    <i class="fas fa-cloud-upload-alt fa-2x mb-2" style="color: var(--accent);"></i>
-                    <p class="mb-0">اضغط لرفع الصور</p>
+                <div class="p-3 text-center" style="border: 2px dashed #fff; border-radius: 15px; cursor: pointer;" onclick="document.getElementById('p-files').click()">
+                    <i class="fas fa-cloud-upload-alt fa-2x mb-2"></i>
+                    <p>ارفع صور منتجك الجديد هنا</p>
                     <input type="file" id="p-files" hidden multiple onchange="handleFiles(this.files)">
                 </div>
-                <div id="preview-container" class="d-flex flex-wrap gap-2 mt-3 justify-content-center"></div>
+                <div id="preview-container" class="d-flex flex-wrap gap-2 mt-2 justify-content-center"></div>
             </div>
-            <div class="col-12"><button class="btn-saiko w-100" onclick="addProduct()">نشر المنتج ✅</button></div>
+            <button class="btn-saiko w-100" onclick="addProduct()">إضافة للمتجر الآن 🎊</button>
         </div>
     </div>
 
     <div class="glass-card">
-        <input type="text" id="admin-search" class="form-control mb-4" placeholder="🔍 ابحث عن منتج..." onkeyup="filterProducts()">
         <div class="table-responsive">
-            <table class="table table-dark align-middle">
+            <table class="table align-middle">
                 <thead>
                     <tr>
                         <th>المنتج</th>
                         <th>السعر</th>
-                        <th>التفاعل</th>
-                        <th>التعليقات</th>
-                        <th>إجراء</th>
+                        <th>إدارة</th>
                     </tr>
                 </thead>
                 <tbody id="product-list"></tbody>
             </table>
         </div>
+    </div>
+    
+    <div class="text-center pb-4 small" style="opacity: 0.6;">
+        تم التطوير بواسطة SAIKO &copy; 2026
     </div>
 </div>
 
@@ -164,6 +180,7 @@
 <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
 
 <script>
+    // إعدادات الـ Firebase (تأكد أنها نفس بياناتك)
     const firebaseConfig = { 
         apiKey: "AIzaSyDBfSCT_wePT2RexgcxZaz9NT9gWmXxgz0", 
         authDomain: "flafilo-store.firebaseapp.com", 
@@ -176,8 +193,8 @@
     const auth = firebase.auth();
     const db = firebase.firestore();
 
-    function saikoToast(msg, ok = true) {
-        Toastify({ text: msg, duration: 2000, style: { background: ok ? "#6c5ce7" : "#e74c3c" } }).showToast();
+    function saikoToast(msg) {
+        Toastify({ text: msg, duration: 2500, style: { background: "linear-gradient(to right, #ff4d94, #6a11cb)" } }).showToast();
     }
 
     auth.onAuthStateChanged(user => {
@@ -189,7 +206,7 @@
     async function login() {
         const e = document.getElementById('login-email').value;
         const p = document.getElementById('login-password').value;
-        try { await auth.signInWithEmailAndPassword(e, p); } catch (err) { saikoToast("بيانات خاطئة", false); }
+        try { await auth.signInWithEmailAndPassword(e, p); } catch (err) { saikoToast("بيانات الدخول غير صحيحة ❌"); }
     }
 
     function logout() { auth.signOut(); }
@@ -208,8 +225,8 @@
     async function addProduct() {
         const name = document.getElementById('p-name').value;
         const price = document.getElementById('p-price').value;
-        if(!name || !price || selectedFiles.length === 0) return saikoToast("أكمل البيانات", false);
-        saikoToast("جاري الرفع...");
+        if(!name || !price || selectedFiles.length === 0) return saikoToast("أكمل البيانات أولاً ✨");
+        saikoToast("جاري المعالجة والرفع... 🚀");
         let urls = [];
         try {
             for (let file of selectedFiles) {
@@ -219,7 +236,7 @@
             }
             await db.collection("gifts").add({ name, price, images: urls, likes: 0, dislikes: 0, createdAt: new Date() });
             location.reload();
-        } catch (e) { saikoToast("فشل الرفع", false); }
+        } catch (e) { saikoToast("فشل في الرفع ❌"); }
     }
 
     function loadProducts() {
@@ -232,59 +249,20 @@
                 const p = doc.data();
                 totalL += (p.likes || 0);
                 list.innerHTML += `
-                    <tr>
-                        <td><img src="${p.images[0]}" class="prod-img me-2"> <span>${p.name}</span></td>
-                        <td><input type="number" class="form-control p-1 text-center" style="width:80px" value="${p.price}" onchange="updatePrice('${doc.id}', this.value)"></td>
-                        <td>👍 ${p.likes||0}</td>
-                        <td><div id="comm-${doc.id}" style="max-height:80px; overflow-y:auto; width:200px"></div></td>
-                        <td><button class="btn btn-link text-danger p-0" onclick="deleteItem('${doc.id}')"><i class="fas fa-trash"></i></button></td>
+                    <tr class="border-bottom border-secondary">
+                        <td><img src="${p.images[0]}" class="prod-img me-2"><br><small>${p.name}</small></td>
+                        <td>${p.price}ج.م</td>
+                        <td>
+                            <button class="btn btn-sm btn-danger rounded-pill" onclick="deleteItem('${doc.id}')"><i class="fas fa-trash"></i></button>
+                        </td>
                     </tr>`;
-                loadComments(doc.id);
             });
             document.getElementById('total-likes').innerText = totalL;
         });
     }
 
-    function loadComments(productId) {
-        db.collection("gifts").doc(productId).collection("comments").orderBy("pinned", "desc").orderBy("createdAt", "desc").onSnapshot(snap => {
-            const box = document.getElementById(`comm-${productId}`);
-            if(!box) return;
-            box.innerHTML = '';
-            snap.forEach(d => {
-                const c = d.data();
-                box.innerHTML += `
-                    <div class="comment-item ${c.pinned ? 'is-pinned-admin' : ''}">
-                        <span class="text-truncate">${c.text}</span>
-                        <div>
-                            <i class="fas fa-thumbtack me-2 ${c.pinned ? 'pin-active' : ''}" style="cursor:pointer" onclick="togglePin('${productId}','${d.id}',${c.pinned})"></i>
-                            <i class="fas fa-times text-muted" style="cursor:pointer" onclick="deleteComment('${productId}','${d.id}')"></i>
-                        </div>
-                    </div>`;
-            });
-        });
-    }
-
-    async function togglePin(pId, cId, current) {
-        await db.collection("gifts").doc(pId).collection("comments").doc(cId).update({ pinned: !current });
-    }
-
-    async function updatePrice(id, newPrice) {
-        await db.collection("gifts").doc(id).update({ price: newPrice });
-        saikoToast("تم تحديث السعر");
-    }
-
     async function deleteItem(id) { 
         if(confirm("حذف المنتج؟")) await db.collection("gifts").doc(id).delete();
-    }
-
-    async function deleteComment(pId, cId) {
-        await db.collection("gifts").doc(pId).collection("comments").doc(cId).delete();
-    }
-
-    function filterProducts() {
-        let input = document.getElementById('admin-search').value.toLowerCase();
-        let rows = document.getElementById('product-list').getElementsByTagName('tr');
-        for (let row of rows) { row.style.display = row.innerText.toLowerCase().includes(input) ? "" : "none"; }
     }
 </script>
 </body>
